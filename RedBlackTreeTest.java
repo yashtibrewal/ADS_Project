@@ -1400,66 +1400,66 @@ public class RedBlackTreeTest {
         /**
          * NODE INSERT TESTS
          */
-        // testInsertingAtRoot();
-        // testInsertingAtLevel2();
-        // testLLbRoot();
-        // testLLb();
-        // testLRbRoot();
-        // testLRb();
-        // testRRbRoot();
-        // testRRb();
-        // testRLbRoot();
-        // testRLb();
-        // testLLrRoot();
-        // testLLr();
-        // testLLrFollowedByLLb();
-        // testRRrRoot();
-        // testRLrRoot();
-        // testLRrRoot();
+        testInsertingAtRoot();
+        testInsertingAtLevel2();
+        testLLbRoot();
+        testLLb();
+        testLRbRoot();
+        testLRb();
+        testRRbRoot();
+        testRRb();
+        testRLbRoot();
+        testRLb();
+        testLLrRoot();
+        testLLr();
+        testLLrFollowedByLLb();
+        testRRrRoot();
+        testRLrRoot();
+        testLRrRoot();
 
         /**
          * NODE DELETE Tests
          */
-        // testDeleteRedNodeDegreeZeroL();
-        // testDeleteRedNodeDegreeZeroR();
-        // testHandleDeleteRedNodeDegreeTwoL();
-        // testHandleDeleteRedNodeDegreeTwoR();
-        // testHandleDeleteBlackNodeDegreeZeroRoot();
-        // testHandleDeleteBlackNodeDegreeZeroL();
-        // testHandleDeleteBlackNodeDegreeZeroR();
-        // testHandleDeleteBlackNodeRb1CaseOneL();
-        // testHandleDeleteBlackNodeDeeperLevelLb0CaseTwo();
-        // testHandleDeleteBlackNodeDeeperLevelLb1CaseOneL();
-        // testHandleDeleteBlackNodeDeeperLevelLb1CaseOneR();
-        // testHandleDeleteBlackNodeDeeperLevelLb1CaseTwo();
-        // testHandleDeleteBlackNodeDeeperLevelLb2();
-        // testHandleDeleteBlackNodeDeeperLevelRb0CaseTwo();
-        // testHandleDeleteBlackNodeDeeperLevelRb1CaseOneL();
-        // testHandleDeleteBlackNodeDeeperLevelRb1CaseOneR();
-        // testHandleDeleteBlackNodeDeeperLevelRb1CaseTwoR();
-        // testHandleDeleteBlackNodeDeeperLevelRb2();
+        testDeleteRedNodeDegreeZeroL();
+        testDeleteRedNodeDegreeZeroR();
+        testHandleDeleteRedNodeDegreeTwoL();
+        testHandleDeleteRedNodeDegreeTwoR();
+        testHandleDeleteBlackNodeDegreeZeroRoot();
+        testHandleDeleteBlackNodeDegreeZeroL();
+        testHandleDeleteBlackNodeDegreeZeroR();
+        testHandleDeleteBlackNodeRb1CaseOneL();
+        testHandleDeleteBlackNodeDeeperLevelLb0CaseTwo();
+        testHandleDeleteBlackNodeDeeperLevelLb1CaseOneL();
+        testHandleDeleteBlackNodeDeeperLevelLb1CaseOneR();
+        testHandleDeleteBlackNodeDeeperLevelLb1CaseTwo();
+        testHandleDeleteBlackNodeDeeperLevelLb2();
+        testHandleDeleteBlackNodeDeeperLevelRb0CaseTwo();
+        testHandleDeleteBlackNodeDeeperLevelRb1CaseOneL();
+        testHandleDeleteBlackNodeDeeperLevelRb1CaseOneR();
+        testHandleDeleteBlackNodeDeeperLevelRb1CaseTwoR();
+        testHandleDeleteBlackNodeDeeperLevelRb2();
 
         /**
          * COLOR FLIP TESTS
          */
-        // testOneColorFlip();
-        // testTwoColorFlips();
-        // testMultipleColorFlips();
-        // testMultipleColorFlipsAndDelete();
+        testOneColorFlip();
+        testTwoColorFlips();
+        testMultipleColorFlips();
+        testMultipleColorFlipsAndDelete();
 
         /**
          * RANGE SEARCH TESTS
          */
-        // testRangeSearchMiddleGroup();
-        // testRangeSearchForEmptyResult();
-        // testRangeSearchForLeftExtreme();
-        // testRangeSearchForAllResult();
+        testRangeSearchMiddleGroup();
+        testRangeSearchForEmptyResult();
+        testRangeSearchForLeftExtreme();
+        testRangeSearchForAllResult();
 
         /**
          * FIND NEAREST TESTS
          */
 
-        testFindNearest();
+        // testFindNearest();
 
     }
 
