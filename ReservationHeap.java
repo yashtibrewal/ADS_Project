@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Min Heap
+ * Implementation of the Min Heap for storing the patrons reservations for the book.
  */
 public class ReservationHeap {
 

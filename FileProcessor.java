@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * To process the files.
+ * To process the IO of the files.
  */
 public class FileProcessor {
 

@@ -2,7 +2,8 @@ import java.util.*;
 import java.util.concurrent.*;;
 
 /**
- * Place where we would be calling all the functions.
+ * Place where we would be calling APIs i.e. InsertBook() etc.
+ * This file is the main access to the disk and the memory data which contains a book manager to manage the books.
  */
 
 public class Controller {
@@ -147,7 +148,6 @@ public class Controller {
                     waitOneMilliSecond();
 
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 break;
@@ -198,6 +198,10 @@ public class Controller {
 
     }
 
+    /**
+     * Helper function to write the output to file.
+     * @param results
+     */
     private void printBooks(List<String> results) {
 
         for (String result : results) {
@@ -207,6 +211,9 @@ public class Controller {
 
     }
 
+    /**
+     * Function which runs for the file length of the code.
+     */
     public void processCommands() {
 
         String command = "";

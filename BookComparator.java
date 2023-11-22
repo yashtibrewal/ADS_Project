@@ -1,5 +1,8 @@
 import java.util.*;
 
+/**
+ * This class is used for comparing books which is used while sorting books.
+ */
 public class BookComparator implements Comparator<Book> {
 
     @Override

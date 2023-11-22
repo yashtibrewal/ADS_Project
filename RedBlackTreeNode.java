@@ -1,4 +1,7 @@
 
+/**
+ * Represents a node in the Red Black Tree File.
+ */
 public class RedBlackTreeNode {
 
     enum NodeColor {

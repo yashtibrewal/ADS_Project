@@ -1,6 +1,8 @@
 
 
-
+/**
+ * Representation of Node in a Reservation Heap.
+ */
 public class ReservationHeapNode {
     /**
      * Every node of the Min-heap should contain (patronID,

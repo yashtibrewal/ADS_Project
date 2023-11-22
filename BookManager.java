@@ -1,5 +1,9 @@
 import java.util.*;
 
+/**
+ * This class is reponsible to generate the output in String formates and pass it back to the the caller.
+ * It is also responsible to use the Red Black Tree Data Structure inside it and manage the books as per the commands
+ */
 public class BookManager {
 
     RedBlackTree redBlackTree;
@@ -34,14 +38,21 @@ public class BookManager {
      */
     public String printBook(int bookID) {
         Book book = redBlackTree.search(bookID);
-
+        if (book == null) {
+            // Handle book not Found
+            return "Book " + bookID + " does not exist\n\n";
+        }
         String result = generatePrintBookResult(book);
 
-        // TODO: handle borrow
-        // TODO: handle reservation heaps
         return result;
     }
 
+    /**
+     * This function is a helper function which helps to create the output format
+     * to print multiple books
+     * @param books
+     * @return
+     */
     public List<String> generatePrintBooksResult(List<Book> books) {
 
         Collections.sort(books, new BookComparator());
@@ -116,6 +127,10 @@ public class BookManager {
     public String returnBook(int patronID, int bookID) {
 
         Book book = redBlackTree.search(bookID);
+        if (book == null) {
+            // Handle book not Found
+            return "Book " + bookID + " does not exist\n\n";
+        }
         String assignedTo = book.returnBook(patronID);
 
         String result = "Book " + bookID + " Returned by Patron " + patronID + "\n\n";
@@ -144,6 +159,12 @@ public class BookManager {
         return result;
     }
 
+    /**
+     * This function is a helper function used to create the message based on patron ids
+     * for the output file.
+     * @param patronIds
+     * @return
+     */
     private String getPatronMessage(List<Integer> patronIds) {
 
         String message = " Reservations made by Patrons ";

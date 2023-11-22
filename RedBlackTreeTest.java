@@ -1,5 +1,8 @@
 import java.util.List;
 
+/**
+ * Contains test cases for insert, delete, rangeSearch, findClosestElement
+ */
 public class RedBlackTreeTest {
 
     /**
@@ -1383,7 +1386,7 @@ public class RedBlackTreeTest {
         redBlackTree.insert(new Book(107, "Not a penny more not a penny less", "Jeffery Archer", "YES"));
 
         List<Book> books = redBlackTree.findClosestBook(200);
-        System.out.println(books);
+        // System.out.println(books);
         if (books.size() == 1
                 && books.get(0).getBookId() == 107) {
             System.out.println("Test Passed");
@@ -1459,7 +1462,7 @@ public class RedBlackTreeTest {
          * FIND NEAREST TESTS
          */
 
-        // testFindNearest();
+        testFindNearest();
 
     }
 

@@ -1,6 +1,10 @@
 
 import java.util.*;
 
+/**
+ * This file contains all the functions related to the RedBlack Tree and all the
+ * helper functions required for the same.
+ */
 public class RedBlackTree {
 
     private RedBlackTreeNode root;
@@ -19,7 +23,8 @@ public class RedBlackTree {
     }
 
     /**
-     * Data structure to store the tree while printing
+     * Data structure to store the tree while printing the tree for helping figure
+     * the inserts deletes etc.
      */
     Map<Integer, List<RedBlackTreeNode>> treeBFS;
 
@@ -97,19 +102,16 @@ public class RedBlackTree {
         colorFlip = 0;
     }
 
-    private void insertRootNode(Book book) {
-        RedBlackTreeNode node = getRoot();
-        node.color = RedBlackTreeNode.NodeColor.BLACK;
-        node.book = book;
-        node.leftChild = new RedBlackTreeNode(); // Assigning External Leaf Node to the left
-        node.rightChild = new RedBlackTreeNode(); // Assigning External Leaf Node to the left
-        node.leftChild.setParent(getRoot());
-        node.rightChild.setParent(getRoot());
-    }
-
-    private void setRoot(RedBlackTreeNode node) {
-        this.root = node;
-    }
+    /**
+     * ========================================================================================================================================================================
+     * ========================================================================================================================================================================
+     * ========================================================================================================================================================================
+     * ========================================================================================================================================================================
+     * PUBLIC API
+     * ========================================================================================================================================================================
+     * ========================================================================================================================================================================
+     * ========================================================================================================================================================================
+     */
 
     public void insert(Book book) {
         if (book == null)
@@ -275,6 +277,171 @@ public class RedBlackTree {
 
     }
 
+    public int getColorFlipCount() {
+        return colorFlip;
+    }
+
+    /**
+     * Helps to figure out were the node P should be placed.
+     * 
+     * @param nodeP
+     * @return
+     */
+    public RedBlackTreeNode searchPlacementForP(RedBlackTreeNode nodeP) {
+
+        /**
+         * We keep going down the levels to see an empty space
+         * for the node for insertion.
+         * 
+         * We stop when we reach a node which is an external node.
+         */
+        RedBlackTreeNode temp = getRoot();
+        RedBlackTreeNode nodePP = temp;
+
+        /**
+         * Initialize the relation as of root.
+         */
+
+        while (!temp.isExternalLeafNode()) { // The code will enter for atleast 1 time, since if root was null, it would
+                                             // have been handled before
+            if (nodeP.book.getBookId() < temp.book.getBookId()) {
+                // Go left
+
+                nodePP = temp;
+                temp = temp.leftChild;
+            } else {
+                // Go right
+
+                nodePP = temp;
+                temp = temp.rightChild;
+            }
+        }
+
+        return nodePP;
+    }
+
+    /**
+     * Helper function to get the nodes and thier levels in an hashmap.
+     * 
+     * @param node
+     * @param level
+     */
+    public void traverseBFS(RedBlackTreeNode node, int level) {
+        if (node != null) {
+            if (this.treeBFS.containsKey(level)) {
+                this.treeBFS.get(level).add(node);
+            } else {
+                this.treeBFS.put(level, new ArrayList<RedBlackTreeNode>());
+                this.treeBFS.get(level).add(node);
+            }
+            traverseBFS(node.leftChild, level + 1);
+            traverseBFS(node.rightChild, level + 1);
+        }
+    }
+
+    public List<Integer> delete(int bookID) {
+
+        RedBlackTreeNode node = searchNode(bookID);
+        if (!node.isExternalLeafNode()) {
+            List<Integer> ids = node.book.getReservationPatronIDs();
+            delete(node);
+            return ids;
+        }
+        return new ArrayList<>();
+    }
+
+    public List<Book> rangeSearch(int bookID1, int bookID2) {
+        rangeSearchResult = new ArrayList<Book>();
+        addToListWhileSearching(bookID1, bookID2, root);
+        Collections.sort(rangeSearchResult, new BookComparator());
+        return rangeSearchResult;
+    }
+
+    public Book search(int bookID) {
+
+        // implementing a binary search
+        RedBlackTreeNode temp = this.getRoot();
+
+        while (temp != null) {
+            if (temp.book != null) {
+                if (temp.book.getBookId() == bookID) {
+                    return temp.book;
+                }
+                if (temp.book.getBookId() < bookID) {
+                    temp = temp.rightChild;
+                } else {
+                    temp = temp.leftChild;
+                }
+            } else { // reached an external node / failure node
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * For converting to string implicity while printing
+     */
+    @Override
+    public String toString() {
+
+        // Clean and Traverse BFS and print.
+        this.treeBFS = new HashMap<>();
+        traverseBFS(getRoot(), 0);
+        return this.treeBFS.toString();
+
+    }
+
+    /**
+     * It is assumed that the books we are looking for the closest to is already
+     * existing in the function
+     * 
+     * @param bookID
+     * @return
+     */
+    public List<Book> findClosestBook(int bookID) {
+
+        List<Book> books = new ArrayList<>();
+        RedBlackTreeNode node = searchNode(bookID);
+        if (node.isExternalLeafNode()) {
+            return findClosestBookIfSearchNotFound(bookID);
+        } else {
+            books.add(node.book);
+            return books;
+        }
+    }
+
+    /**
+     * ========================================================================================================================================================================
+     * ========================================================================================================================================================================
+     * ========================================================================================================================================================================
+     * ========================================================================================================================================================================
+     * INSERT Functionalities
+     * ========================================================================================================================================================================
+     * ========================================================================================================================================================================
+     * ========================================================================================================================================================================
+     */
+
+    /**
+     * Helper for insert
+     * 
+     * @param book
+     */
+    private void insertRootNode(Book book) {
+        RedBlackTreeNode node = getRoot();
+        node.color = RedBlackTreeNode.NodeColor.BLACK;
+        node.book = book;
+        node.leftChild = new RedBlackTreeNode(); // Assigning External Leaf Node to the left
+        node.rightChild = new RedBlackTreeNode(); // Assigning External Leaf Node to the left
+        node.leftChild.setParent(getRoot());
+        node.rightChild.setParent(getRoot());
+    }
+
+    private void setRoot(RedBlackTreeNode node) {
+        this.root = node;
+    }
+
     /**
      * This does not count for a color flip operation taught in the class for
      * inserting and reaching a 2 red in a row situation.
@@ -289,6 +456,12 @@ public class RedBlackTree {
         }
     }
 
+    /**
+     * Returns positive integer if the integer is negative.
+     * 
+     * @param x
+     * @return
+     */
     private int nonNegative(int x) {
         if (x < 0) {
             return -1 * x;
@@ -296,6 +469,14 @@ public class RedBlackTree {
         return x;
     }
 
+    /**
+     * This function returns the positive difference between the bookid and the
+     * book's bookid
+     * 
+     * @param bookID
+     * @param book
+     * @return
+     */
     private int getDifference(int bookID, Book book) {
 
         return nonNegative(bookID - book.getBookId());
@@ -326,10 +507,6 @@ public class RedBlackTree {
 
     private void incrementColorFlip() {
         colorFlip++;
-    }
-
-    public int getColorFlipCount() {
-        return colorFlip;
     }
 
     /**
@@ -559,6 +736,48 @@ public class RedBlackTree {
         return relation;
     }
 
+    /**
+     * Helper function to get the degree of a node.
+     * 
+     * @param node
+     * @return
+     */
+    private int getNodeDegree(RedBlackTreeNode node) {
+
+        if (node == null ||
+                node.leftChild == null && node.rightChild == null ||
+                node.leftChild.isExternalLeafNode() && node.rightChild.isExternalLeafNode()) {
+            return 0;
+        }
+
+        if (!node.leftChild.isExternalLeafNode() && node.rightChild.isExternalLeafNode() ||
+                node.leftChild.isExternalLeafNode() && !node.rightChild.isExternalLeafNode()) {
+            return 1;
+        }
+
+        return 2;
+
+    }
+
+    /**
+     * ========================================================================================================================================================================
+     * ========================================================================================================================================================================
+     * ========================================================================================================================================================================
+     * ========================================================================================================================================================================
+     * DELETE Functionalities
+     * ========================================================================================================================================================================
+     * ========================================================================================================================================================================
+     * ========================================================================================================================================================================
+     */
+
+    /**
+     * Checks for the number of red child it contains.
+     * ONLY checks at the level below it.
+     * Helper for deletion.
+     * 
+     * @param node
+     * @return
+     */
     private int getNoOfRedChilds(RedBlackTreeNode node) {
 
         int count = 0;
@@ -580,38 +799,44 @@ public class RedBlackTree {
 
     }
 
+    /**
+     * Function which generates a relation for the nodeY for deletion functionality.
+     * 
+     * @param nodeY
+     * @return
+     */
     private RelationXcn getRelationForNodeY(RedBlackTreeNode nodeY) {
 
-        Direction X;
-        RedBlackTreeNode.NodeColor c;
-        int n;
+        Direction directionX;
+        RedBlackTreeNode.NodeColor colorC;
+        int redNodeCountN;
         RedBlackTreeNode nodePY = nodeY.parent;
         RedBlackTreeNode nodeV;
         if (nodeY.parent != null) {
 
             // Setting direction X
             if (nodeY.parent.rightChild == nodeY) {
-                X = Direction.right;
+                directionX = Direction.right;
             } else {
-                X = Direction.left;
+                directionX = Direction.left;
             }
 
             // Setting node V
-            if (X == Direction.right) {
+            if (directionX == Direction.right) {
                 nodeV = nodePY.leftChild;
             } else {
                 nodeV = nodePY.rightChild;
             }
 
             if (nodeV.isBlack()) {
-                c = RedBlackTreeNode.NodeColor.BLACK;
+                colorC = RedBlackTreeNode.NodeColor.BLACK;
             } else {
-                c = RedBlackTreeNode.NodeColor.RED;
+                colorC = RedBlackTreeNode.NodeColor.RED;
             }
 
-            n = getNoOfRedChilds(nodeV);
+            redNodeCountN = getNoOfRedChilds(nodeV);
 
-            RelationXcn relationXcn = new RelationXcn(X, c, n, nodeV);
+            RelationXcn relationXcn = new RelationXcn(directionX, colorC, redNodeCountN, nodeV);
             return relationXcn;
 
         } else {
@@ -620,68 +845,12 @@ public class RedBlackTree {
         }
     }
 
-    public RedBlackTreeNode searchPlacementForP(RedBlackTreeNode P) {
-
-        /**
-         * We keep going down the levels to see an empty space
-         * for the node for insertion.
-         * 
-         * We stop when we reach a node which is an external node.
-         */
-        RedBlackTreeNode temp = getRoot();
-        RedBlackTreeNode PP = temp;
-
-        /**
-         * Initialize the relation as of root.
-         */
-
-        while (!temp.isExternalLeafNode()) { // The code will enter for atleast 1 time, since if root was null, it would
-                                             // have been handled before
-            if (P.book.getBookId() < temp.book.getBookId()) {
-                // Go left
-
-                PP = temp;
-                temp = temp.leftChild;
-            } else {
-                // Go right
-
-                PP = temp;
-                temp = temp.rightChild;
-            }
-        }
-
-        return PP;
-    }
-
-    public void traverseBFS(RedBlackTreeNode node, int level) {
-        if (node != null) {
-            if (this.treeBFS.containsKey(level)) {
-                this.treeBFS.get(level).add(node);
-            } else {
-                this.treeBFS.put(level, new ArrayList<RedBlackTreeNode>());
-                this.treeBFS.get(level).add(node);
-            }
-            traverseBFS(node.leftChild, level + 1);
-            traverseBFS(node.rightChild, level + 1);
-        }
-    }
-
-    private int getNodeDegree(RedBlackTreeNode node) {
-
-        if (node == null ||
-                node.leftChild == null && node.rightChild == null ||
-                node.leftChild.isExternalLeafNode() && node.rightChild.isExternalLeafNode()) {
-            return 0;
-        }
-
-        if (!node.leftChild.isExternalLeafNode() && node.rightChild.isExternalLeafNode() ||
-                node.leftChild.isExternalLeafNode() && !node.rightChild.isExternalLeafNode()) {
-            return 1;
-        }
-
-        return 2;
-
-    }
+    /**
+     * Internal delete function.
+     * 
+     * @param bookID
+     * @return
+     */
 
     private void delete(RedBlackTreeNode node) {
 
@@ -1000,14 +1169,13 @@ public class RedBlackTree {
         nodePY.rightChild = nodeD;
         nodeW.leftChild = nodeC;
 
-        
         if (originalnodePYParent != null) {
             if (originalnodePYParent.leftChild == nodePY) {
                 originalnodePYParent.leftChild = nodeX;
             } else {
                 originalnodePYParent.rightChild = nodeX;
             }
-        }else{  // original nodePY was root
+        } else { // original nodePY was root
             setRoot(nodeX);
         }
 
@@ -1036,17 +1204,15 @@ public class RedBlackTree {
         nodePY.rightChild = nodeC;
         nodeW.leftChild = nodePY;
 
-
         if (originalnodePYParent != null) {
             if (originalnodePYParent.leftChild == nodePY) {
                 originalnodePYParent.leftChild = nodeW;
             } else {
                 originalnodePYParent.rightChild = nodeW;
             }
-        }else{  // original nodePY was root
+        } else { // original nodePY was root
             setRoot(nodeW);
         }
-
 
     }
 
@@ -1074,7 +1240,7 @@ public class RedBlackTree {
             } else {
                 originalnodePYParent.rightChild = nodeV;
             }
-        }else{  // original nodePY was root
+        } else { // original nodePY was root
             setRoot(nodeV);
         }
 
@@ -1118,7 +1284,7 @@ public class RedBlackTree {
             } else {
                 originalnodePYParent.rightChild = nodeW;
             }
-        }else{ // original nodePY was root
+        } else { // original nodePY was root
             setRoot(nodeW);
         }
 
@@ -1153,42 +1319,29 @@ public class RedBlackTree {
             } else {
                 originalnodePYParent.rightChild = nodeV;
             }
-        }else{  // original nodePY was root
+        } else { // original nodePY was root
             setRoot(nodeV);
         }
 
     }
 
-    /**
-     * 
-     * @param nodeV
-     */
     private void handleNodeDeletionCaseTwoLb0(RedBlackTreeNode nodeV) {
         flipNodeColor(nodeV);
         flipNodeColor(nodeV.parent);
     }
 
-    /**
-     * 
-     * @param nodeV
-     */
     private void handleNodeDeletionCaseOneLb0(RedBlackTreeNode nodeV) {
         // we just change the node V to Red.
         flipNodeColor(nodeV);
     }
 
-    /**
-     * 
-     * @param v
-     */
-    private void handleNodeDeletionCaseRr2(RedBlackTreeNode v) {
+    private void handleNodeDeletionCaseRr2(RedBlackTreeNode nodeV) {
         // The logic is same for handleNodeDeletionCaseTwoRr1
-        handleNodeDeletionCaseTwoRr1(v);
+        handleNodeDeletionCaseTwoRr1(nodeV);
     }
 
     private void handleNodeDeletionCaseTwoRr1(RedBlackTreeNode nodeV) {
 
-        
         RedBlackTreeNode originalnodePYParent = nodeV.parent.parent;
         RedBlackTreeNode nodePY = nodeV.parent;
         RedBlackTreeNode nodeW = nodeV.rightChild;
@@ -1217,7 +1370,7 @@ public class RedBlackTree {
             } else {
                 originalnodePYParent.rightChild = nodeW;
             }
-        }else{  // original nodePY was root
+        } else { // original nodePY was root
             setRoot(nodeW);
         }
 
@@ -1225,7 +1378,6 @@ public class RedBlackTree {
 
     private void handleNodeDeletionCaseOneRr1(RedBlackTreeNode nodeV) {
 
-        
         RedBlackTreeNode originalnodePYParent = nodeV.parent.parent;
         RedBlackTreeNode nodePY = nodeV.parent;
         RedBlackTreeNode nodeW = nodeV.rightChild;
@@ -1253,16 +1405,12 @@ public class RedBlackTree {
             } else {
                 originalnodePYParent.rightChild = nodeW;
             }
-        }else{  // original nodePY was root
+        } else { // original nodePY was root
             setRoot(nodeW);
         }
 
     }
 
-    /**
-     * 
-     * @param nodeV
-     */
     private void handleNodeDeletionRr0(RedBlackTreeNode nodeV) {
 
         RedBlackTreeNode originalnodePYParent = nodeV.parent.parent;
@@ -1287,15 +1435,11 @@ public class RedBlackTree {
             } else {
                 originalnodePYParent.rightChild = nodeV;
             }
-        }else{ // original nodePY was root
+        } else { // original nodePY was root
             setRoot(nodeV);
         }
     }
 
-    /**
-     * 
-     * @param nodeV
-     */
     private void handleNodeDeletionCaseTwoRb2(RedBlackTreeNode nodeV) {
 
         // Logic is same as handleCaseTwoRb1
@@ -1305,7 +1449,6 @@ public class RedBlackTree {
 
     /**
      * The left node of nodePY is the nodeV and its left node is RED
-     * We perform a LR rotation at PY
      * 
      * @param nodeV
      */
@@ -1340,7 +1483,7 @@ public class RedBlackTree {
             } else {
                 originalnodePYParent.rightChild = nodeW;
             }
-        }else{  // original nodePY was root
+        } else { // original nodePY was root
             setRoot(nodeW);
         }
 
@@ -1348,9 +1491,8 @@ public class RedBlackTree {
 
     /**
      * The left node of nodePY is the nodeV and its left node is RED
-     * We perform a LL rotation at PY
      * 
-     * @param relationXcn
+     * @param nodeV
      */
     private void handleNodeDeletionCaseOneRb1(RedBlackTreeNode nodeV) {
 
@@ -1381,7 +1523,7 @@ public class RedBlackTree {
             } else {
                 originalnodePYParent.rightChild = nodeV;
             }
-        }else{  // original nodePY was root
+        } else { // original nodePY was root
             setRoot(nodeV);
         }
 
@@ -1518,12 +1660,16 @@ public class RedBlackTree {
 
     }
 
-    public List<Book> rangeSearch(int bookID1, int bookID2) {
-        rangeSearchResult = new ArrayList<Book>();
-        addToListWhileSearching(bookID1, bookID2, root);
-        Collections.sort(rangeSearchResult, new BookComparator());
-        return rangeSearchResult;
-    }
+    /**
+     * ========================================================================================================================================================================
+     * ========================================================================================================================================================================
+     * ========================================================================================================================================================================
+     * ========================================================================================================================================================================
+     * RANGE SEARCH, SEARCH Functionalities
+     * ========================================================================================================================================================================
+     * ========================================================================================================================================================================
+     * ========================================================================================================================================================================
+     */
 
     private void addToListWhileSearching(int bookID1, int bookID2, RedBlackTreeNode parent) {
         if (parent != null && !parent.isExternalLeafNode()) {
@@ -1541,30 +1687,13 @@ public class RedBlackTree {
         }
     }
 
-    public Book search(int bookID) {
-
-        // implementing a binary search
-        RedBlackTreeNode temp = this.getRoot();
-
-        while (temp != null) {
-            if (temp.book != null) {
-                if (temp.book.getBookId() == bookID) {
-                    return temp.book;
-                }
-                if (temp.book.getBookId() < bookID) {
-                    temp = temp.rightChild;
-                } else {
-                    temp = temp.leftChild;
-                }
-            } else { // reached an external node / failure node
-                return null;
-            }
-        }
-
-        return null;
-    }
-
-    public RedBlackTreeNode searchNode(int bookID) {
+    /**
+     * Helper function to return the R.B. Tree node for internal processing.
+     * 
+     * @param bookID
+     * @return
+     */
+    private RedBlackTreeNode searchNode(int bookID) {
 
         // implementing a binary search
         RedBlackTreeNode temp = this.getRoot();
@@ -1581,27 +1710,6 @@ public class RedBlackTree {
         }
 
         return temp;
-    }
-
-    public List<Integer> delete(int bookID) {
-
-        RedBlackTreeNode node = searchNode(bookID);
-        if (!node.isExternalLeafNode()) {
-            List<Integer> ids = node.book.getReservationPatronIDs();
-            delete(node);
-            return ids;
-        }
-        return new ArrayList<>();
-    }
-
-    @Override
-    public String toString() {
-
-        // Clean and Traverse BFS and print.
-        this.treeBFS = new HashMap<>();
-        traverseBFS(getRoot(), 0);
-        return this.treeBFS.toString();
-
     }
 
     /**
@@ -1739,25 +1847,6 @@ public class RedBlackTree {
         traverseForNearestBooks(temp, bookID, books, difference);
 
         return books;
-    }
-
-    /**
-     * It is assumed that the books we are looking for the closest to is already
-     * existing in the function
-     * 
-     * @param bookID
-     * @return
-     */
-    public List<Book> findClosestBook(int bookID) {
-
-        List<Book> books = new ArrayList<>();
-        RedBlackTreeNode node = searchNode(bookID);
-        if (node.isExternalLeafNode()) {
-            return findClosestBookIfSearchNotFound(bookID);
-        } else {
-            books.add(node.book);
-            return books;
-        }
     }
 
 }
